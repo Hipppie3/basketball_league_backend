@@ -16,7 +16,7 @@ const Player = sequelize.define('player', {
   type: DataTypes.STRING,
  },
  number: {
-  type: DataTypes.STRING,
+  type: DataTypes.INTEGER,
  },
 });
 
