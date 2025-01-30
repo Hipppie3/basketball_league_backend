@@ -18,6 +18,16 @@ const Player = sequelize.define('player', {
  number: {
   type: DataTypes.INTEGER,
  },
+ teamId: {
+  type: DataTypes.INTEGER,
+  allowNull: true,
+  references: {
+   model: 'teams', // The table this foreign key references
+   key: 'id', // The column in 'teams' that 'teamId; refers
+    },
+  onDelete: 'SET NULL', // If a team is deleted, set teamId to NULL
+ },
+
 });
 
 export default Player;

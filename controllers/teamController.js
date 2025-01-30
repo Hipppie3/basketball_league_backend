@@ -1,4 +1,4 @@
-import Team from '../models/team.js';
+import { Team, Player } from '../models/index.js'
 
 export const createTeam = async (req, res) => {
  try{
@@ -12,7 +12,12 @@ export const createTeam = async (req, res) => {
 
 export const getTeams = async (req, res) => {
  try{
-  const teams = await Team.findAll();
+  const teams = await Team.findAll({
+   include: {
+    model: Player,
+    attributes: ['id', 'firstName', 'lastName', 'age', 'position', 'number',]
+   },
+  });
   if (teams.length === 0) {
    return res.status(404).json({ message: 'No teams found '});
   }
