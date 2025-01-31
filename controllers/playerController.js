@@ -1,4 +1,4 @@
-import { Player, Team } from '../models/index.js';
+import { Player, Team, Stat } from '../models/index.js';
 
 // ✅ Create a New Player (POST /players)
 export const createPlayer = async (req, res) => {
@@ -15,10 +15,16 @@ export const createPlayer = async (req, res) => {
 export const getAllPlayers = async (req, res) => {
   try {
     const players = await Player.findAll({
-      include: {
-        model: Team, // Include team info
-        attributes: ['id', 'name'],
-      },
+      include: [
+        {
+          model: Team, // ✅ Include team info
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Stat, // ✅ Include player stats
+          attributes: { exclude: ['createdAt', 'updatedAt'] }, // Optional: remove timestamps
+        }
+      ],
     });
 
     if (players.length === 0) {
@@ -30,6 +36,35 @@ export const getAllPlayers = async (req, res) => {
     res.status(500).json({ message: 'Error fetching players', error });
   }
 };
+
+// ✅ Get a Player by ID (GET /players/:id) - Includes Team info
+export const getPlayer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const player = await Player.findByPk(id, {
+      include: [
+        {
+          model: Team, // ✅ Include team info
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Stat, // ✅ Include player stats
+          attributes: { exclude: ['createdAt', 'updatedAt'] }, // Optional: remove timestamps
+        }
+      ],
+    });
+
+    if (!player) {
+      return res.status(404).json({ message: 'Player not found' });
+    }
+
+    res.status(200).json(player);
+  } catch (error) {
+    console.error('Error fetching player:', error);
+    res.status(500).json({ message: 'Error fetching player', error });
+  }
+};
+
 
 // ✅ Update a Player (PUT /players/:id)
 export const updatePlayer = async (req, res) => {
@@ -45,10 +80,16 @@ export const updatePlayer = async (req, res) => {
     
     // Fetch updated player with team info
     const updatedPlayer = await Player.findByPk(id, {
-      include: {
-        model: Team,
-        attributes: ['id', 'name'],
-      },
+      include: [
+        {
+          model: Team, // ✅ Include team info
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Stat, // ✅ Include player stats
+          attributes: { exclude: ['createdAt', 'updatedAt'] }, // Optional: remove timestamps
+        }
+      ],
     });
 
     res.status(200).json(updatedPlayer);

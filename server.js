@@ -3,6 +3,7 @@ import cors from 'cors'
 import {connectDB} from './config/database.js'
 import playerRoutes from './routes/playerRoutes.js'
 import teamRoutes from './routes/teamRoutes.js'
+import statRoutes from './routes/statRoutes.js'
 
 connectDB();
 
@@ -13,6 +14,7 @@ app.use(cors())
 
 app.use('/api', playerRoutes)
 app.use('/api', teamRoutes)
+app.use('/api', statRoutes)
 
 const PORT = process.env.PORT || 5151
 
